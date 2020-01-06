@@ -1,0 +1,33 @@
+useDynLib(INLA.climate, c_Q, Rc_Q, c_mu, Rc_mu, c_mu_ar1, Rc_mu_ar1)
+
+
+importFrom("graphics","title", "abline", "hist", "lines", "par", "plot")
+  importFrom("stats", "density", "dexp", "dnorm", "runif", "sd",
+             "splinefun", "toeplitz")
+  importFrom("utils", "read.table")
+import(methods)
+import(sp)
+import(Matrix)
+importFrom("grDevices", "dev.cur", "dev.new", "dev.off")
+importFrom("methods", "show")
+export(inla.climate)
+export(inla.climate.tcr)
+export(inla.climate.mu)
+export(inla.climate.ar1)
+export(summary.inla.climate)
+export(print.summary.inla.climate)
+export(plot.inla.climate)
+export(print.inla.climate)
+export(compute.Hprior)
+export(h.map.maker)
+export(rgeneric.lrd)
+export(rgeneric.ar1)
+
+
+
+
+## methods
+  S3method("plot", "inla.climate")
+  S3method("print", "inla.climate")
+  S3method("summary", "inla.climate")
+  S3method("print", "summary.inla.climate")
