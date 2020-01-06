@@ -6,7 +6,7 @@ rgeneric.ar1 = function(
   theta = NULL)
 {
   
-  require("INLA.climate",quietly=TRUE)
+  require("INLA.climate.test",quietly=TRUE)
   
   tau = exp(15)
   envir = environment(sys.call()[[1]])
@@ -75,7 +75,7 @@ rgeneric.ar1 = function(
     }
     res = .C('Rc_mu_ar1',mu=as.matrix(means,ncol=1),as.double(fforcing),as.integer(nn),as.integer(NN),
              as.double(weights),as.double(llambdas),as.double(sf),
-             as.double(hyperparam$F0))
+             as.double(hyperparam$F0), PACKAGE="INLA.climate.test")
     #print(res$mu[1:3])
     return(c(res$mu,rep(0,NN*nn)))
   }
@@ -100,7 +100,7 @@ rgeneric.ar1 = function(
     
     res = .C('Rc_Q',minii=as.double(ii),minjj=as.double(jj),minxx=as.double(xx),
              as.integer(nn),as.integer(NN),as.double(rep(1/NN,NN)),as.double(rep(0.5,NN)),
-             as.double(tau),as.double(1.0))
+             as.double(tau),as.double(1.0), PACKAGE="INLA.climate.test")
     
     G = Matrix::sparseMatrix(i=res$minii,j=res$minjj,x=res$minxx,symmetric=TRUE)
     G[G != 0] = 1
@@ -141,7 +141,7 @@ rgeneric.ar1 = function(
     
     res = .C('Rc_Q',minii=as.double(ii),minjj=as.double(jj),minxx=as.double(xx), #skal ikke sigma inn her?
              as.integer(nn),as.integer(NN),as.double(weights),as.double(alphas),
-             as.double(tau),as.double(sx))
+             as.double(tau),as.double(sx), PACKAGE="INLA.climate.test")
     
     
     Q = Matrix::sparseMatrix(i=res$minii,j=res$minjj,x=res$minxx,symmetric=TRUE)

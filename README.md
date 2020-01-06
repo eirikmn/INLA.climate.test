@@ -1,2 +1,2 @@
 # INLA.climate
-Repository for the INLA.climate R-package
+Repository for the INLA.climate.test R-package

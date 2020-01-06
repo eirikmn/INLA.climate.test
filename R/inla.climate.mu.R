@@ -98,11 +98,11 @@ inla.climate.mu = function(result,forcing,quick=FALSE,T0.corr=0,nsamples=100000,
       if(m == 1){
         res = .C('Rc_mu_ar1',mumeans=as.matrix(meansmc,ncol=1),as.double(forcing),as.integer(length(forcing)),as.integer(m),
                  as.double(1),as.double(LL[iter]),as.double(hyperpars[iter,1]),
-                 as.double(hyperpars[iter,2]))
+                 as.double(hyperpars[iter,2]), PACKAGE="INLA.climate.test")
       }else{
         res = .C('Rc_mu_ar1',mumeans=as.matrix(meansmc,ncol=1),as.double(forcing),as.integer(length(forcing)),as.integer(m),
                  as.double(ww[iter,]),as.double(LL[iter,]),as.double(hyperpars[iter,1]),
-                 as.double(hyperpars[iter,2]))
+                 as.double(hyperpars[iter,2]), PACKAGE="INLA.climate.test")
       }
       
     }

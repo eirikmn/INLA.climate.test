@@ -84,11 +84,11 @@ inla.climate.tcr = function(result,Qco2,nsamples=100000,seed=1234,
       if(m == 1){
         res = .C('Rc_mu_ar1',mumeans=as.matrix(meansmc,ncol=1),as.double(zmc),as.integer(80),as.integer(m),
                  as.double(1),as.double(LL[iter]),as.double(hyperpars[iter,1]),
-                 as.double(hyperpars[iter,2]))
+                 as.double(hyperpars[iter,2]), PACKAGE="INLA.climate.test")
       }else{
         res = .C('Rc_mu_ar1',mumeans=as.matrix(meansmc,ncol=1),as.double(zmc),as.integer(80),as.integer(m),
                  as.double(ww[iter,]),as.double(LL[iter,]),as.double(hyperpars[iter,1]),
-                 as.double(hyperpars[iter,2]))
+                 as.double(hyperpars[iter,2]), PACKAGE="INLA.climate.test")
       }
       
       
