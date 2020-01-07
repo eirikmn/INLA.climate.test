@@ -76,6 +76,20 @@ rgeneric.ar1 = function(
     res = .C('Rc_mu_ar1',mu=as.matrix(means,ncol=1),as.double(fforcing),as.integer(nn),as.integer(NN),
              as.double(weights),as.double(llambdas),as.double(sf),
              as.double(hyperparam$F0), PACKAGE="INLA.climate.test")
+    
+    # z = sf*(fforcing+hyperparam$F0)
+    # struktur = numeric(nn)
+    # index.a = 0.5+seq(0,nn-1,length.out = nn)
+    # for(iter in 1:NN){
+    #   struktur = struktur + weights[iter]*exp(llambdas[iter]*(index.a))
+    # }
+    # mu=numeric(nn)
+    # for(iter in 1:nn){
+    #   #meansmc[i] = rev(strukturmc[1:i])%*%zzmc[1:i]
+    #   mu[iter]=rev(struktur[1:iter])%*%z[1:iter]
+    # }
+    # plot(mu)
+    # lines(res$mu)
     #print(res$mu[1:3])
     return(c(res$mu,rep(0,NN*nn)))
   }
@@ -199,15 +213,17 @@ rgeneric.ar1 = function(
     if(NN==1){
       lprior = lprior + dnorm(theta[4],log=TRUE)
       return(lprior)
+    }else{
+      for(m in 1:(NN-1)){
+        lprior = lprior + dnorm(theta[3+m],sd=1000,log=TRUE)
+        #dgamma(theta[3+m],shape=1,log=T)#dnorm(params[[3+m]],log=TRUE)
+      }
+      for(m in 1:(NN)){
+        lprior = lprior + dnorm(theta[2+NN+m],sd=1000,log=TRUE)
+        
+      } 
     }
-    for(m in 1:(NN-1)){
-      lprior = lprior + dnorm(theta[3+m],log=TRUE)
-      #dgamma(theta[3+m],shape=1,log=T)#dnorm(params[[3+m]],log=TRUE)
-    }
-    for(m in 1:(NN)){
-      lprior = lprior + dnorm(theta[2+NN+m],log=TRUE)
-      
-    }
+    
     
     
     return (lprior)
