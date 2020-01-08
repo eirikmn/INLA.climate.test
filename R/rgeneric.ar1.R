@@ -25,13 +25,13 @@ rgeneric.ar1 = function(
     
     weights=numeric(NN)
     
-    if(NN==2){
-      para$w1 <- 1/(1+exp(-theta[4]))
-      para$w2 <- 1-para$w1
-      para$p1 <- 1/(1+exp(-theta[5]))
-      para$p2 <- 1/(1+exp(-theta[6]))
-      return(para)
-    }
+    # if(NN==2){
+    #   para$w1 <- 1/(1+exp(-theta[4]))
+    #   para$w2 <- 1-para$w1
+    #   para$p1 <- 1/(1+exp(-theta[5]))
+    #   para$p2 <- 1/(1+exp(-theta[6]))
+    #   return(para)
+    # }
     
     if(NN>1){
       for(i in 2:(NN)){
