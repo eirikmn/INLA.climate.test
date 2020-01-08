@@ -210,8 +210,8 @@ rgeneric.ar1 = function(
     #print("prior")
     params = interpret.theta()
     #H = params$H
-    a = 1
-    b = 0.01
+    a = 0.5
+    b = 0.005
     aa = 1
     bb = 0.01
     lprior = INLA::inla.pc.dprec(params$kappax, u=a, alpha=b, log=TRUE) + log(params$kappax)
