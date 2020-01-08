@@ -26,10 +26,10 @@ rgeneric.ar1 = function(
     weights=numeric(NN)
     
     if(NN==2){
-      para$w1 <- theta[4]
+      para$w1 <- 1/(1+exp(-theta[4]))
       para$w2 <- 1-para$w1
-      para$p1 <- theta[5]
-      para$p2 <- theta[6]
+      para$p1 <- 1/(1+exp(-theta[5]))
+      para$p2 <- 1/(1+exp(-theta[6]))
       return(para)
     }
     
@@ -100,6 +100,7 @@ rgeneric.ar1 = function(
     # plot(mu)
     # lines(res$mu)
     #print(res$mu[1:3])
+    #cat("mu: ",res$mu[c(1:6,160:166)],"\n",sep=" ")
     return(c(res$mu,rep(0,NN*nn)))
   }
   
@@ -138,6 +139,7 @@ rgeneric.ar1 = function(
       
       
     }
+    #print("heiQ")
     
     hyperparam = interpret.theta()
     
@@ -168,7 +170,7 @@ rgeneric.ar1 = function(
     
     
     Q = Matrix::sparseMatrix(i=res$minii,j=res$minjj,x=res$minxx,symmetric=TRUE)
-    
+    #print("hadeQ")
     return ( Q )
   }
   
@@ -179,6 +181,7 @@ rgeneric.ar1 = function(
       nn=get("n",envir)
       NN=get("N",envir)
     }
+    #print("heiconst")
     # tid.rgen.start = proc.time()[[3]]
     hyperparams = interpret.theta()
     pparam = hyperparams[NN+3+(1:NN)]
@@ -190,17 +193,19 @@ rgeneric.ar1 = function(
       sum = sum -(nn-1)/2*log(1-pparam[i]^2)
     }
     tid.rgen.slutt = proc.time()[[3]]
-    
+    #print("hadeconst")
     return(sum)
   }
   
   log.prior = function()
   {
+    #print("heiprior")
     if(!is.null(envir)){
       
       NN=get("N",envir)
       #pparam=get("params",envir)
     }
+    #print(theta)
     # tid.rgen.start = proc.time()[[3]]
     #print("prior")
     params = interpret.theta()
@@ -219,13 +224,18 @@ rgeneric.ar1 = function(
     #lprior = lprior + dnorm(theta[4],log=TRUE)
     lprior = lprior + dnorm(theta[3],log=TRUE)
     #lprior = lprior + dnorm(-shift.a+2*shift.a/(1+exp(-params$F0)),sd=0.2,log=TRUE)+log(2*shift.a)-params$F0 -2*log(1+exp(-params$F0))
-    # if(NN==2){
-    #   lprior = lprior + inla.pc.dcor0(params$w1,0.5,0.5)
-    #   lprior = lprior + dbeta(params$p1,3,3)
-    #   lprior = lprior + dbeta(params$p2,3,3)
-    #   
-    #   return(lprior)
-    # }
+    if(NN==2){
+      #print(lprior)
+      lprior = lprior + inla.pc.dcor0(params$w1,0.5,0.5,log=TRUE)
+      #print(lprior)
+      lprior = lprior + dbeta(params$p1,3,3,log=TRUE)
+      #print(lprior)
+      lprior = lprior + dbeta(params$p2,3,3,log=TRUE)
+      #print(params)
+      #print(lprior)
+      #print("heiprior2")
+      return(lprior)
+    }
     if(NN==1){
       lprior = lprior + dnorm(theta[4],log=TRUE)
       return(lprior)
@@ -241,7 +251,7 @@ rgeneric.ar1 = function(
     }
     
     
-    
+    #print("heiprior")
     return (lprior)
   }
   
@@ -254,6 +264,8 @@ rgeneric.ar1 = function(
     if(NN==1){
       ini = c(ini,0)
       return(ini)
+    }else if(NN==2){
+      ini = c(0,0,0,0.5,0.5,0.5)
     }else{
       for(i in 1:(NN-1)){
         ini=c(ini,0.)

@@ -106,14 +106,10 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.0
   }else if(model == "ar1"){
     #m = 1 #only one component is available so far
     model.approx = INLA::inla.rgeneric.define(rgeneric.ar1,n=n,N=m,forcing=forcing)
-    #model.approx = INLA::inla.rgeneric.define(rgeneric.forcing.3AR1.free,n=n,N=m,forcing=forcing)
   }
-  
-  formula = y ~ -1+ f(idy, model=model.approx)
+  formula = y ~ -1+ f(idy, model=model.approx); if(print.progress) print("Starting INLA..")
 
-  if(print.progress){
-    print("Starting INLA..")
-  }
+  
 
   tid.approx.start = proc.time()[[3]]
   
