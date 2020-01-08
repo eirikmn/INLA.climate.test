@@ -219,13 +219,13 @@ rgeneric.ar1 = function(
     #lprior = lprior + dnorm(theta[4],log=TRUE)
     lprior = lprior + dnorm(theta[3],log=TRUE)
     #lprior = lprior + dnorm(-shift.a+2*shift.a/(1+exp(-params$F0)),sd=0.2,log=TRUE)+log(2*shift.a)-params$F0 -2*log(1+exp(-params$F0))
-    if(NN==2){
-      lprior = lprior + inla.pc.dcor0(params$w1,0.5,0.5)
-      lprior = lprior + dbeta(params$p1,3,3)
-      lprior = lprior + dbeta(params$p2,3,3)
-      
-      return(lprior)
-    }
+    # if(NN==2){
+    #   lprior = lprior + inla.pc.dcor0(params$w1,0.5,0.5)
+    #   lprior = lprior + dbeta(params$p1,3,3)
+    #   lprior = lprior + dbeta(params$p2,3,3)
+    #   
+    #   return(lprior)
+    # }
     if(NN==1){
       lprior = lprior + dnorm(theta[4],log=TRUE)
       return(lprior)
