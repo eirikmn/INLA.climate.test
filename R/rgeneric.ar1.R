@@ -24,15 +24,6 @@ rgeneric.ar1 = function(
     denom = sum(exp(c(0,theta[3+(1:(NN-1))])))
     
     weights=numeric(NN)
-    
-    # if(NN==2){
-    #   para$w1 <- 1/(1+exp(-theta[4]))
-    #   para$w2 <- 1-para$w1
-    #   para$p1 <- 1/(1+exp(-theta[5]))
-    #   para$p2 <- 1/(1+exp(-theta[6]))
-    #   return(para)
-    # }
-    
     if(NN>1){
       for(i in 2:(NN)){
         weights[i] <- exp(theta[2+i])
@@ -84,23 +75,8 @@ rgeneric.ar1 = function(
     }
     res = .C('Rc_mu_ar1',mu=as.matrix(means,ncol=1),as.double(fforcing),as.integer(nn),as.integer(NN),
              as.double(weights),as.double(llambdas),as.double(sf),
-             as.double(hyperparam$F0), PACKAGE="INLA.climate.test")
-    
-    # z = sf*(fforcing+hyperparam$F0)
-    # struktur = numeric(nn)
-    # index.a = 0.5+seq(0,nn-1,length.out = nn)
-    # for(iter in 1:NN){
-    #   struktur = struktur + weights[iter]*exp(llambdas[iter]*(index.a))
-    # }
-    # mu=numeric(nn)
-    # for(iter in 1:nn){
-    #   #meansmc[i] = rev(strukturmc[1:i])%*%zzmc[1:i]
-    #   mu[iter]=rev(struktur[1:iter])%*%z[1:iter]
-    # }
-    # plot(mu)
-    # lines(res$mu)
+             as.double(hyperparam$F0))
     #print(res$mu[1:3])
-    #cat("mu: ",res$mu[c(1:6,160:166)],"\n",sep=" ")
     return(c(res$mu,rep(0,NN*nn)))
   }
   
@@ -124,7 +100,7 @@ rgeneric.ar1 = function(
     
     res = .C('Rc_Q',minii=as.double(ii),minjj=as.double(jj),minxx=as.double(xx),
              as.integer(nn),as.integer(NN),as.double(rep(1/NN,NN)),as.double(rep(0.5,NN)),
-             as.double(tau),as.double(1.0), PACKAGE="INLA.climate.test")
+             as.double(tau),as.double(1.0))
     
     G = Matrix::sparseMatrix(i=res$minii,j=res$minjj,x=res$minxx,symmetric=TRUE)
     G[G != 0] = 1
@@ -139,7 +115,6 @@ rgeneric.ar1 = function(
       
       
     }
-    #print("heiQ")
     
     hyperparam = interpret.theta()
     
@@ -166,11 +141,11 @@ rgeneric.ar1 = function(
     
     res = .C('Rc_Q',minii=as.double(ii),minjj=as.double(jj),minxx=as.double(xx), #skal ikke sigma inn her?
              as.integer(nn),as.integer(NN),as.double(weights),as.double(alphas),
-             as.double(tau),as.double(sx), PACKAGE="INLA.climate.test")
+             as.double(tau),as.double(sx))
     
     
     Q = Matrix::sparseMatrix(i=res$minii,j=res$minjj,x=res$minxx,symmetric=TRUE)
-    #print("hadeQ")
+    
     return ( Q )
   }
   
@@ -181,7 +156,6 @@ rgeneric.ar1 = function(
       nn=get("n",envir)
       NN=get("N",envir)
     }
-    #print("heiconst")
     # tid.rgen.start = proc.time()[[3]]
     hyperparams = interpret.theta()
     pparam = hyperparams[NN+3+(1:NN)]
@@ -193,25 +167,23 @@ rgeneric.ar1 = function(
       sum = sum -(nn-1)/2*log(1-pparam[i]^2)
     }
     tid.rgen.slutt = proc.time()[[3]]
-    #print("hadeconst")
+    
     return(sum)
   }
   
   log.prior = function()
   {
-    #print("heiprior")
     if(!is.null(envir)){
       
       NN=get("N",envir)
       #pparam=get("params",envir)
     }
-    #print(theta)
     # tid.rgen.start = proc.time()[[3]]
     #print("prior")
     params = interpret.theta()
     #H = params$H
-    a = 0.5
-    b = 0.005
+    a = 1
+    b = 0.01
     aa = 1
     bb = 0.01
     lprior = INLA::inla.pc.dprec(params$kappax, u=a, alpha=b, log=TRUE) + log(params$kappax)
@@ -224,35 +196,20 @@ rgeneric.ar1 = function(
     #lprior = lprior + dnorm(theta[4],log=TRUE)
     lprior = lprior + dnorm(theta[3],log=TRUE)
     #lprior = lprior + dnorm(-shift.a+2*shift.a/(1+exp(-params$F0)),sd=0.2,log=TRUE)+log(2*shift.a)-params$F0 -2*log(1+exp(-params$F0))
-    # if(NN==2){
-    #   #print(lprior)
-    #   #lprior = lprior + inla.pc.dcor0(params$w1,0.5,0.5,log=TRUE)
-    #   
-    #   #lprior = lprior + dbeta(params$p1,2,2,log=TRUE)
-    #   
-    #   #lprior = lprior + dbeta(params$p2,2,2,log=TRUE)
-    #   
-    #   lprior = lprior + dnorm(theta[4],log=TRUE)
-    #   lprior = lprior + dnorm(theta[5],log=TRUE)
-    #   lprior = lprior + dnorm(theta[6],log=TRUE)
-    #   return(lprior)
-    # }
     if(NN==1){
       lprior = lprior + dnorm(theta[4],log=TRUE)
       return(lprior)
-    }else{
-      for(m in 1:(NN-1)){
-        lprior = lprior + dnorm(theta[3+m],sd=1000,log=TRUE)
-        #dgamma(theta[3+m],shape=1,log=T)#dnorm(params[[3+m]],log=TRUE)
-      }
-      for(m in 1:(NN)){
-        lprior = lprior + dnorm(theta[2+NN+m],sd=1000,log=TRUE)
-        
-      } 
+    }
+    for(m in 1:(NN-1)){
+      lprior = lprior + dnorm(theta[3+m],log=TRUE)
+      #dgamma(theta[3+m],shape=1,log=T)#dnorm(params[[3+m]],log=TRUE)
+    }
+    for(m in 1:(NN)){
+      lprior = lprior + dnorm(theta[2+NN+m],log=TRUE)
+      
     }
     
     
-    #print("heiprior")
     return (lprior)
   }
   
@@ -265,8 +222,6 @@ rgeneric.ar1 = function(
     if(NN==1){
       ini = c(ini,0)
       return(ini)
-    }else if(NN==2){
-      ini = c(0,0,0,0.5,0.5,0.5)
     }else{
       for(i in 1:(NN-1)){
         ini=c(ini,0.)
