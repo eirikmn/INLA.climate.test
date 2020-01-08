@@ -211,7 +211,7 @@ rgeneric.ar1 = function(
     params = interpret.theta()
     #H = params$H
     a = 0.5
-    b = 0.005
+    b = 0.0005
     aa = 1
     bb = 0.01
     lprior = INLA::inla.pc.dprec(params$kappax, u=a, alpha=b, log=TRUE) + log(params$kappax)
@@ -228,9 +228,9 @@ rgeneric.ar1 = function(
       #print(lprior)
       lprior = lprior + inla.pc.dcor0(params$w1,0.5,0.5,log=TRUE)
 
-      lprior = lprior + dbeta(params$p1,2,2,log=TRUE)
+      lprior = lprior + dbeta(params$p1,3,3,log=TRUE)
 
-      lprior = lprior + dbeta(params$p2,2,2,log=TRUE)
+      lprior = lprior + dbeta(params$p2,3,3,log=TRUE)
 
       #lprior = lprior + dnorm(theta[4],log=TRUE)
       #lprior = lprior + dnorm(theta[5],log=TRUE)
