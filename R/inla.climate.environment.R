@@ -24,14 +24,14 @@ process.inla = function(object, misc=NULL){
     mem.approx = INLA::inla.emarginal(var.func,margs$`Theta2 for idy`)
     sigmax.approx = INLA::inla.emarginal(function(x) 1/sqrt(exp(x)),margs$`Theta1 for idy`)
     sigmaf.approx = INLA::inla.emarginal(function(x) 1/sqrt(exp(x)),margs$`Theta3 for idy`)
-    F0.approx = INLA::inla.emarginal(function(x) x,margs$`Theta4 for idy`)
+    F0.approx = 0#INLA::inla.emarginal(function(x) x,margs$`Theta4 for idy`)
     #F0.approx = INLA::inla.emarginal(function(x) -a + 2*a/(1+exp(-x)),margs$`Theta4 for idy`)
     
     margs.approx = object$marginals.hyperpar
     marg.mem = INLA::inla.tmarginal(var.func,margs.approx$`Theta2 for idy`)
     marg.sx = INLA::inla.tmarginal(function(x) 1/sqrt(exp(x)),margs.approx$`Theta1 for idy`)
     marg.sf = INLA::inla.tmarginal(function(x) 1/sqrt(exp(x)),margs.approx$`Theta3 for idy`)
-    marg.F0 = INLA::inla.tmarginal(function(x) x,margs.approx$`Theta4 for idy`)
+    marg.F0 = cbind(1:75,numeric(75))#INLA::inla.tmarginal(function(x) x,margs.approx$`Theta4 for idy`)
     #marg.F0 = INLA::inla.tmarginal(function(x) -a + 2*a/(1+exp(-x)),margs.approx$`Theta4 for idy`)
     
     zmarg.mem = INLA::inla.zmarginal(marg.mem,silent=TRUE)
@@ -39,13 +39,14 @@ process.inla = function(object, misc=NULL){
   }else{
     sigmax.approx = INLA::inla.emarginal(function(x) 1/sqrt(exp(x)),margs$`Theta1 for idy`)
     sigmaf.approx = INLA::inla.emarginal(function(x) 1/sqrt(exp(x)),margs$`Theta2 for idy`)
-    F0.approx = INLA::inla.emarginal(function(x) x,margs$`Theta3 for idy`)
+    F0.approx = 0#INLA::inla.emarginal(function(x) x,margs$`Theta3 for idy`)
     #F0.approx = INLA::inla.emarginal(function(x) -a + 2*a/(1+exp(-x)),margs$`Theta3 for idy`)
     
     margs.approx = object$marginals.hyperpar
     marg.sx = INLA::inla.tmarginal(function(x) 1/sqrt(exp(x)),margs.approx$`Theta1 for idy`)
     marg.sf = INLA::inla.tmarginal(function(x) 1/sqrt(exp(x)),margs.approx$`Theta2 for idy`)
-    marg.F0 = INLA::inla.tmarginal(function(x) x,margs.approx$`Theta3 for idy`)
+    marg.F0 = cbind(1:75,numeric(75))
+    #marg.F0 = INLA::inla.tmarginal(function(x) x,margs.approx$`Theta3 for idy`)
     #marg.F0 = INLA::inla.tmarginal(function(x) -a + 2*a/(1+exp(-x)),margs.approx$`Theta3 for idy`)
   }
   
@@ -53,13 +54,13 @@ process.inla = function(object, misc=NULL){
   
     zmarg.sx = INLA::inla.zmarginal(marg.sx,silent=TRUE)
     zmarg.sf = INLA::inla.zmarginal(marg.sf,silent=TRUE)
-    zmarg.F0 = INLA::inla.zmarginal(marg.F0,silent=TRUE)
+    #zmarg.F0 = INLA::inla.zmarginal(marg.F0,silent=TRUE)
     
 
     
     hpd.sx = INLA::inla.hpdmarginal(0.95,marg.sx)
     hpd.sf = INLA::inla.hpdmarginal(0.95,marg.sf)
-    hpd.F0 = INLA::inla.hpdmarginal(0.95,marg.F0)
+    #hpd.F0 = matrix(c(0,0),ncol=2)#INLA::inla.hpdmarginal(0.95,marg.F0)
     
     #cat("Creds: ","(",hpd.H[1],",",hpd.H[2],") & (",hpd.sx[1],",",hpd.sx[2],") & (",
     #    hpd.sf[1],",",hpd.sf[2],") & (",hpd.F0[1],",",hpd.F0[2],") ",sep="")
@@ -90,32 +91,32 @@ process.inla = function(object, misc=NULL){
 
 results$hyperparam$means[["sigmax"]] = sigmax.approx
 results$hyperparam$means[["sigmaf"]] = sigmaf.approx
-results$hyperparam$means[["F0"]] = F0.approx
+results$hyperparam$means[["F0"]] = 0#F0.approx
 
 
 results$hyperparam$sd[["sigmax"]] = zmarg.sx$sd
 results$hyperparam$sd[["sigmaf"]] = zmarg.sf$sd
-results$hyperparam$sd[["F0"]] = zmarg.F0$sd
+results$hyperparam$sd[["F0"]] = zmarg.sf$sd#zmarg.F0$sd
 
 
 results$hyperparam$quant0.025[["sigmax"]] = zmarg.sx$quant0.025
 results$hyperparam$quant0.025[["sigmaf"]] = zmarg.sf$quant0.025
-results$hyperparam$quant0.025[["F0"]] = zmarg.F0$quant0.025
+results$hyperparam$quant0.025[["F0"]] = zmarg.sf$quant0.025#zmarg.F0$quant0.025
 
 
 results$hyperparam$quant0.5[["sigmax"]] = zmarg.sx$quant0.5
 results$hyperparam$quant0.5[["sigmaf"]] = zmarg.sf$quant0.5
-results$hyperparam$quant0.5[["F0"]] = zmarg.F0$quant0.5
+results$hyperparam$quant0.5[["F0"]] = zmarg.sf$quant0.025#zmarg.F0$quant0.5
 
 
 results$hyperparam$quant0.975[["sigmax"]] = zmarg.sx$quant0.975
 results$hyperparam$quant0.975[["sigmaf"]] = zmarg.sf$quant0.975
-results$hyperparam$quant0.975[["F0"]] = zmarg.F0$quant0.975
+results$hyperparam$quant0.975[["F0"]] = zmarg.sf$quant0.025#zmarg.F0$quant0.975
 
 
 results$hyperparam$marginals[["sigmax"]] = marg.sx
 results$hyperparam$marginals[["sigmaf"]] = marg.sf
-results$hyperparam$marginals[["F0"]] = marg.F0
+results$hyperparam$marginals[["F0"]] = marg.sf#marg.F0
 
 
 if(misc$model %in% c("arfima","fgn","ar1")){ 
