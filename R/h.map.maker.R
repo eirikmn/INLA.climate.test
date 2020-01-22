@@ -8,19 +8,19 @@ h.map.maker = function(m=4,lagmax=1000,model="fgn"){
   
   folder.path=c()
   for(i in 1:length(.libPaths())){
-    if("INLA.climate.test" %in% list.files(.libPaths()[i])){
-      folder.path=paste0(.libPaths()[i],"/INLA.climate.test/Hmapping/")
+    if("INLA.climate" %in% list.files(.libPaths()[i])){
+      folder.path=paste0(.libPaths()[i],"/INLA.climate/Hmapping/")
     }
   }
   if(length(folder.path)==0){
-    stop("Could not find package directory, please make sure that INLA.climate.test is installed within one of the libraries displayed by '.libPaths()'.")
+    stop("Could not find package directory, please make sure that INLA.climate is installed within one of the libraries displayed by '.libPaths()'.")
   }
   
 
   
-  #if(length(list.files(path=file.path(.Library,"/INLA.climate.test/Hmapping/",fsep="")))==0)
+  #if(length(list.files(path=file.path(.Library,"/INLA.climate/Hmapping/",fsep="")))==0)
   if(length(list.files(path=folder.path))==0){
-    stop(paste0("Directory ",folder.path," is empty. Please make sure that INLA.climate.test package is properly installed."))
+    stop(paste0("Directory ",folder.path," is empty. Please make sure that INLA.climate package is properly installed."))
     
   }
     
