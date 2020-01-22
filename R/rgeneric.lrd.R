@@ -37,6 +37,7 @@ rgeneric.lrd = function(
     
     #a = 3
     #shift = -a + 2*a/(1+exp(-theta[4]))
+    theta[4]=0
     shift=theta[4]
     
     return(list(H = H, kappa = kappa, scale = scale, shift = shift))
@@ -184,7 +185,7 @@ rgeneric.lrd = function(
 
   initial = function()
   {
-    ini = c(-3,0.,-10,0.5)
+    ini = c(-3,0.,0,0)
     return (ini)
   }
 
