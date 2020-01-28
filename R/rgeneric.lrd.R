@@ -169,11 +169,12 @@ rgeneric.lrd = function(
       #pparam=get("params",envir)
     }
     if(!is.null(prior)){
-      return(prior)
+      return(prior(theta))
     }
     # tid.rgen.start = proc.time()[[3]]
     #print("prior")
     params = interpret.theta()
+    
     #H = params$H
     a = 1
     b = 0.01

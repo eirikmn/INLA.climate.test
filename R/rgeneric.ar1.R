@@ -180,7 +180,7 @@ rgeneric.ar1 = function(
       #pparam=get("params",envir)
     }
     if(!is.null(prior)){
-      return(prior)
+      return(prior(theta))
     }
     # tid.rgen.start = proc.time()[[3]]
     #print("prior")
