@@ -1,6 +1,6 @@
 
 inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.01,restart.inla=FALSE,
-                        m = 4,model="fgn", print.progress=FALSE,
+                        m = 4,model="fgn", print.progress=FALSE,logprior=NULL,
                         inla.options = list(),
                         tcr.options = list(),
                         mu.options = list(),
@@ -102,10 +102,10 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.0
     funks = h.map.maker(m,lagmax,model)
     lprior.fun.H = compute.Hprior(50,0.9,0.1,persistent=TRUE,model=model)
     model.approx = INLA::inla.rgeneric.define(rgeneric.lrd,lprior.fun.H = lprior.fun.H,
-                                              n=n,N=m,forcing=forcing,funks=funks)
+                                              n=n,N=m,forcing=forcing,funks=funks,logprior=logprior)
   }else if(model == "ar1"){
     #m = 1 #only one component is available so far
-    model.approx = INLA::inla.rgeneric.define(rgeneric.ar1,n=n,N=m,forcing=forcing)
+    model.approx = INLA::inla.rgeneric.define(rgeneric.ar1,n=n,N=m,forcing=forcing,logprior=logprior)
     #model.approx = INLA::inla.rgeneric.define(rgeneric.forcing.3AR1.free,n=n,N=m,forcing=forcing)
   }
   

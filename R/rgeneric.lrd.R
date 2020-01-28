@@ -37,8 +37,7 @@ rgeneric.lrd = function(
     
     #a = 3
     #shift = -a + 2*a/(1+exp(-theta[4]))
-    #theta[4]=0
-    shift=0#theta[4]
+    shift=theta[4]
     
     return(list(H = H, kappa = kappa, scale = scale, shift = shift))
   }
@@ -162,7 +161,15 @@ rgeneric.lrd = function(
   {
     if(!is.null(envir)){
       
+      
+    }
+    if(!is.null(envir)){
+      prior = get("logprior",envir)
       llprior.fun.H=get("lprior.fun.H",envir)
+      #pparam=get("params",envir)
+    }
+    if(!is.null(prior)){
+      return(prior)
     }
     # tid.rgen.start = proc.time()[[3]]
     #print("prior")
@@ -178,14 +185,14 @@ rgeneric.lrd = function(
     #lprior = lprior + log(0.5)+log(1+1/(1+exp(-theta[2]))) - theta[2]-2*log(1+exp(-theta[2]))
     a=3
     #lprior = lprior + dnorm(-a+2*a/(1+exp(-params$shift)),sd=0.2,log=TRUE)+log(2*a)-params$shift -2*log(1+exp(-params$shift))
-    #lprior = lprior + dnorm(theta[4],log=TRUE)
+    lprior = lprior + dnorm(theta[4],log=TRUE)
     
     return (lprior)
   }
 
   initial = function()
   {
-    ini = c(-3,0.,0)
+    ini = c(-3,0.,-10,0.5)
     return (ini)
   }
 

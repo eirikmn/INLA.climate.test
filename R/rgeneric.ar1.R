@@ -173,10 +173,14 @@ rgeneric.ar1 = function(
   
   log.prior = function()
   {
+    
     if(!is.null(envir)){
-      
+      prior = get("logprior",envir)
       NN=get("N",envir)
       #pparam=get("params",envir)
+    }
+    if(!is.null(prior)){
+      return(prior)
     }
     # tid.rgen.start = proc.time()[[3]]
     #print("prior")
