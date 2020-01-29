@@ -30,7 +30,7 @@ rgeneric.ar1 = function(
       }
     }
     
-    weights[1]=1
+    weights[1]=exp(1)
     weights = weights/sum(weights)
     for(i in 1:NN){
       para[[paste0("w",i)]] <- weights[i]
